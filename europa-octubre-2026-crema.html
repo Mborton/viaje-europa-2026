@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italia + Norte de España · Octubre 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+
+/* === THEME: PARCHMENT (Style C) === */
+:root {
+  --bg: #f4efe6;
+  --bg-dark: #1e1008;
+  --ink: #1e1008;
+  --ink-70: rgba(30,16,8,0.7);
+  --ink-40: rgba(30,16,8,0.4);
+  --ink-15: rgba(30,16,8,0.15);
+  --sienna: #8b4513;
+  --sienna-soft: rgba(139,69,19,0.12);
+  --terracotta: #c9622f;
+  --gold: #b07d3a;
+  --font-d: 'Cormorant', serif;
+  --font-b: 'Lato', sans-serif;
+  --title-size: clamp(1.5rem,5vw,4rem);
+  --h2-size: clamp(1.25rem,3.5vw,2.5rem);
+  --body-size: clamp(0.72rem,1.4vw,1rem);
+  --small-size: clamp(0.58rem,0.95vw,0.76rem);
+  --pad: clamp(1rem,4vw,3.5rem);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* === viewport-base.css === */
+html,body{height:100%;overflow-x:hidden}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;position:relative}
+img,video{max-width:100%;max-height:min(50vh,400px);object-fit:contain}
+@media(max-height:700px){:root{--pad:clamp(0.75rem,3vw,2rem);--title-size:clamp(1.25rem,4.5vw,2.5rem)}}
+@media(max-height:600px){:root{--pad:clamp(0.5rem,2.5vw,1.5rem);--body-size:clamp(0.62rem,1.2vw,0.88rem)}.nav-dots{display:none}}
+@media(max-height:500px){:root{--pad:clamp(0.4rem,2vw,1rem);--title-size:clamp(1rem,3.5vw,1.5rem)}}
+@media(max-width:600px){:root{--title-size:clamp(1.25rem,7vw,2.5rem)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important}html{scroll-behavior:auto}}
+
+/* === REVEAL === */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .65s var(--ease),transform .65s var(--ease)}
+.slide.visible .reveal{opacity:1;transform:translateY(0)}
+.slide.visible .reveal:nth-child(1){transition-delay:.05s}
+.slide.visible .reveal:nth-child(2){transition-delay:.14s}
+.slide.visible .reveal:nth-child(3){transition-delay:.23s}
+.slide.visible .reveal:nth-child(4){transition-delay:.32s}
+.slide.visible .reveal:nth-child(5){transition-delay:.41s}
+.slide.visible .reveal:nth-child(6){transition-delay:.50s}
+
+/* === PROGRESS BAR === */
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--sienna);width:0%;z-index:1000;transition:width .3s ease}
+
+/* === NAV DOTS === */
+.nav-dots{position:fixed;right:clamp(0.8rem,2vw,1.5rem);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:clamp(5px,1vh,8px);z-index:1000}
+.nav-dot{width:clamp(5px,0.7vw,7px);height:clamp(5px,0.7vw,7px);border-radius:50%;background:var(--ink-15);border:none;cursor:pointer;transition:all .3s ease;padding:0}
+.nav-dot.active{background:var(--sienna);transform:scale(1.35)}
+
+/* === EDIT === */
+.edit-hotzone{position:fixed;top:0;left:0;width:80px;height:80px;z-index:10000;cursor:pointer}
+.edit-toggle{position:fixed;top:clamp(.5rem,1.5vh,1rem);left:clamp(.5rem,1.5vw,1rem);background:var(--sienna);color:var(--bg);border:none;padding:clamp(5px,1vh,8px) clamp(8px,1.5vw,14px);font-family:var(--font-b);font-size:var(--small-size);font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;z-index:10001;opacity:0;pointer-events:none;transition:opacity .3s}
+.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto}
+.edit-banner{position:fixed;bottom:0;left:0;right:0;background:var(--sienna);color:var(--bg);text-align:center;font-family:var(--font-b);font-size:var(--small-size);font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:clamp(4px,.8vh,8px);z-index:10001;opacity:0;pointer-events:none;transition:opacity .3s}
+.edit-banner.active{opacity:1;pointer-events:auto}
+body.edit-active [contenteditable]{outline:1px dashed var(--sienna);outline-offset:2px;cursor:text}
+
+/* === SHARED ELEMENTS === */
+.map-grid::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,69,19,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(139,69,19,.07) 1px,transparent 1px);background-size:clamp(2rem,5vw,4rem) clamp(2rem,5vw,4rem);pointer-events:none}
+.top-stripe{position:absolute;top:0;left:0;right:0;height:clamp(4px,.6vh,6px);background:linear-gradient(90deg,#7a3a10,var(--sienna),var(--gold),var(--sienna),#7a3a10)}
+.side-line{position:absolute;top:0;right:clamp(3rem,8vw,7rem);width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(139,69,19,.35) 20%,rgba(139,69,19,.35) 80%,transparent)}
+.dot-cluster{position:absolute;top:clamp(1.5rem,4vh,3rem);right:clamp(3.5rem,8.5vw,7.5rem);display:flex;flex-direction:column;gap:clamp(4px,.8vh,8px)}
+.dot-cluster span{display:block;width:clamp(3px,.5vw,6px);height:clamp(3px,.5vw,6px);border-radius:50%;background:var(--sienna);opacity:.6}
+
+.slide-header{padding:clamp(1rem,2.8vh,2.2rem) var(--pad);display:flex;align-items:center;justify-content:space-between;z-index:2;flex-shrink:0}
+.eyebrow{font-family:var(--font-b);font-size:var(--small-size);font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--sienna)}
+.slide-num{font-family:var(--font-b);font-size:var(--small-size);color:var(--ink-40);letter-spacing:.1em}
+
+/* === SLIDE BACKGROUNDS === */
+.bg-parchment{background:var(--bg)}
+.bg-dark{background:var(--bg-dark)}
+
+/* === PHOTO SLIDE === */
+.slide-photo .photo-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.slide-photo .photo-overlay{position:absolute;inset:0;background:linear-gradient(108deg,rgba(244,239,230,.97) 0%,rgba(244,239,230,.88) 38%,rgba(244,239,230,.12) 100%)}
+
+/* === ENHANCED CITY CONTENT === */
+.city-content{z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,3vh,2.5rem);overflow:hidden}
+.city-dates{font-family:var(--font-b);font-size:var(--small-size);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--sienna);margin-bottom:clamp(.3rem,.7vh,.6rem)}
+.city-title{font-family:var(--font-d);font-size:clamp(2.8rem,7.5vw,5.5rem);font-weight:700;color:var(--ink);line-height:.92;margin-bottom:clamp(.5rem,1.2vh,1rem)}
+
+/* Highlight box */
+.city-highlight{display:flex;align-items:center;gap:clamp(.5rem,1.2vw,1rem);background:var(--sienna-soft);border-left:3px solid var(--sienna);padding:clamp(.35rem,.9vh,.7rem) clamp(.6rem,1.5vw,1rem);margin-bottom:clamp(.4rem,1vh,.8rem)}
+.hl-badge{font-family:var(--font-b);font-size:clamp(.42rem,.72vw,.58rem);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--sienna);white-space:nowrap;flex-shrink:0}
+.hl-text{font-family:var(--font-d);font-size:clamp(.9rem,1.8vw,1.3rem);font-weight:600;color:var(--ink);line-height:1.2}
+
+/* Activity cards */
+.city-acts{display:flex;flex-direction:column;gap:clamp(.2rem,.5vh,.4rem);margin-bottom:clamp(.4rem,1vh,.8rem)}
+.act-card{display:flex;align-items:baseline;gap:clamp(.4rem,1vw,.8rem);padding:clamp(.25rem,.6vh,.5rem) clamp(.5rem,1.2vw,.9rem);background:rgba(30,16,8,.03);border-left:2px solid rgba(139,69,19,.25)}
+.act-num{font-family:var(--font-b);font-size:clamp(.38rem,.65vw,.52rem);font-weight:700;letter-spacing:.15em;color:rgba(139,69,19,.5);flex-shrink:0}
+.act-text{font-family:var(--font-b);font-size:var(--body-size);color:var(--ink-70);line-height:1.35}
+
+/* Neighborhood bar (formerly hotel bar) */
+.city-hotel-row{display:flex;align-items:center;flex-wrap:wrap;gap:clamp(.3rem,.8vw,.6rem);padding-top:clamp(.4rem,1vh,.8rem);border-top:1px solid var(--ink-15)}
+.hotel-icon{color:var(--sienna);font-size:var(--small-size)}
+.hotel-name{font-family:var(--font-b);font-size:var(--small-size);color:var(--ink-40)}
+.hotel-sep{color:var(--ink-15);font-size:var(--small-size)}
+.hotel-pill{font-family:var(--font-b);font-size:clamp(.4rem,.7vw,.58rem);font-weight:700;letter-spacing:.1em;background:var(--sienna-soft);color:var(--sienna);padding:clamp(2px,.4vh,4px) clamp(6px,1.2vw,10px)}
+
+/* === SLIDES 1–2: PORTADA + RUTA === */
+#s1{background:var(--bg)}
+#s1 .big-title{font-family:var(--font-d);font-size:clamp(3rem,9vw,7rem);font-weight:700;line-height:.9;color:var(--ink);margin-bottom:clamp(.5rem,1.5vh,1rem)}
+#s1 .big-title em{display:block;font-style:italic;color:var(--sienna);font-size:.78em}
+#s1 .portada-sub{font-family:var(--font-b);font-size:clamp(.6rem,1.4vw,.9rem);letter-spacing:.25em;text-transform:uppercase;color:var(--ink-40);margin-bottom:clamp(.8rem,2.5vh,2rem)}
+#s1 .pmeta{display:flex;gap:clamp(1rem,3vw,2.5rem);align-items:flex-start}
+#s1 .pmeta-item{display:flex;flex-direction:column;gap:3px}
+#s1 .pmeta-val{font-family:var(--font-d);font-size:clamp(1rem,2.5vw,1.8rem);font-weight:600;color:var(--ink)}
+#s1 .pmeta-label{font-family:var(--font-b);font-size:clamp(.42rem,.78vw,.6rem);letter-spacing:.25em;text-transform:uppercase;color:var(--ink-40)}
+#s1 .pmeta-div{width:1px;height:clamp(2rem,4vh,3rem);background:rgba(139,69,19,.3);margin-top:4px}
+
+/* Ruta slide */
+#s2{background:var(--bg)}
+.ruta-title{font-family:var(--font-d);font-size:clamp(1.5rem,4vw,3rem);font-weight:600;font-style:italic;color:var(--ink);margin-bottom:clamp(.5rem,1.3vh,1rem)}
+.ruta-strip{display:flex;align-items:flex-start;width:100%;overflow:hidden;margin-bottom:clamp(.7rem,1.8vh,1.4rem)}
+.r-stop{display:flex;flex-direction:column;align-items:center;gap:clamp(3px,.6vh,6px);flex:1;min-width:0}
+.r-conn{display:flex;align-items:center;flex:1.5;padding-top:clamp(5px,1vh,8px)}
+.r-dot{width:clamp(8px,1.2vw,12px);height:clamp(8px,1.2vw,12px);border-radius:50%;background:var(--bg);border:2px solid var(--sienna);flex-shrink:0}
+.r-dot.main{background:var(--sienna)}
+.r-dashes{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--sienna) 0,var(--sienna) 4px,transparent 4px,transparent 8px);opacity:.4}
+.r-label{font-family:var(--font-b);font-size:clamp(.38rem,.75vw,.58rem);font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-70);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.r-days{font-family:var(--font-b);font-size:clamp(.35rem,.62vw,.5rem);color:var(--sienna)}
+.ruta-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.5rem,1.5vw,1rem)}
+.rc{background:rgba(30,16,8,.04);border:1px solid var(--ink-15);padding:clamp(.5rem,1.4vh,.9rem) clamp(.5rem,1.4vw,.9rem)}
+.rc-t{font-family:var(--font-d);font-size:clamp(.75rem,1.5vw,1.1rem);font-weight:600;color:var(--ink);margin-bottom:3px}
+.rc-s{font-family:var(--font-b);font-size:clamp(.38rem,.72vw,.56rem);color:var(--ink-40);letter-spacing:.1em;text-transform:uppercase}
+
+/* === SLIDE 5: ROMA DÍA A DÍA === */
+#s5{background:var(--bg)}
+.days-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.6rem,1.4vw,1.1rem)}
+.day-card{background:rgba(30,16,8,.04);border:1px solid var(--ink-15);border-left:3px solid var(--sienna);padding:clamp(.6rem,1.5vh,1rem) clamp(.6rem,1.5vw,1rem)}
+.day-num{font-family:var(--font-b);font-size:clamp(.38rem,.72vw,.58rem);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--sienna);margin-bottom:2px}
+.day-title{font-family:var(--font-d);font-size:clamp(.8rem,1.6vw,1.2rem);font-weight:600;color:var(--ink);margin-bottom:clamp(3px,.5vh,6px)}
+.day-items{list-style:none;display:flex;flex-direction:column;gap:clamp(2px,.4vh,4px)}
+.day-items li{font-family:var(--font-b);font-size:clamp(.5rem,.92vw,.7rem);color:var(--ink-70);line-height:1.3}
+
+/* === SLIDE 7: ROAD TRIP STATS === */
+#s7{background:var(--bg)}
+.rt-title{font-family:var(--font-d);font-size:clamp(1.5rem,4vw,3rem);font-weight:600;font-style:italic;color:var(--ink);margin-bottom:clamp(.3rem,.8vh,.6rem)}
+.rt-sub{font-family:var(--font-b);font-size:var(--small-size);color:var(--ink-40);letter-spacing:.12em;text-transform:uppercase;margin-bottom:clamp(.8rem,2vh,1.5rem)}
+.rt-stops{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(.5rem,1.4vw,1rem);margin-bottom:clamp(.7rem,1.8vh,1.4rem)}
+.rt-stop{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(3px,.6vh,6px);padding:clamp(.5rem,1.4vh,.9rem) clamp(.3rem,1vw,.6rem);background:rgba(30,16,8,.04);border:1px solid var(--ink-15)}
+.rt-num{font-family:var(--font-b);font-size:clamp(.38rem,.65vw,.5rem);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--sienna)}
+.rt-city{font-family:var(--font-d);font-size:clamp(.7rem,1.4vw,1rem);font-weight:600;color:var(--ink);line-height:1.1}
+.rt-nights{font-family:var(--font-b);font-size:clamp(.38rem,.65vw,.5rem);color:var(--ink-40)}
+.rt-facts{display:flex;gap:clamp(1.5rem,4vw,3rem);border-top:1px solid var(--ink-15);padding-top:clamp(.6rem,1.4vh,1rem)}
+.rt-fval{font-family:var(--font-d);font-size:clamp(1rem,2vw,1.5rem);font-weight:600;color:var(--sienna)}
+.rt-flab{font-family:var(--font-b);font-size:clamp(.38rem,.72vw,.58rem);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-40)}
+
+/* === SLIDE 13: PRESUPUESTO === */
+#s13{background:var(--bg)}
+.pres-title{font-family:var(--font-d);font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:700;color:var(--ink);margin-bottom:clamp(.25rem,.6vh,.5rem)}
+.pres-sub{font-family:var(--font-b);font-size:var(--small-size);color:var(--ink-40);letter-spacing:.12em;text-transform:uppercase;margin-bottom:clamp(.8rem,2vh,1.5rem)}
+.pres-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.5rem,1.3vw,1rem) clamp(1rem,3vw,2rem);margin-bottom:clamp(.5rem,1.2vh,1rem)}
+.pres-item{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--ink-15);padding:clamp(4px,.7vh,7px) 0}
+.pres-concept{font-family:var(--font-b);font-size:var(--body-size);color:var(--ink-70)}
+.pres-amount{font-family:var(--font-d);font-size:clamp(.85rem,1.8vw,1.3rem);font-weight:700;color:var(--ink)}
+.pres-total{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--bg);padding:clamp(.6rem,1.5vh,1rem) clamp(.8rem,2vw,1.5rem)}
+.pres-total-label{font-family:var(--font-b);font-size:var(--small-size);letter-spacing:.25em;text-transform:uppercase}
+.pres-total-amt{font-family:var(--font-d);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--gold)}
+
+/* === SLIDE 14 (closing) on dark === */
+#s14{background:var(--bg-dark)}
+#s14 .eyebrow{color:var(--sienna)}
+#s14 .slide-num{color:rgba(245,240,232,.3)}
+.cl-content{z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:clamp(1.5rem,4vh,3rem) var(--pad);overflow:hidden}
+.cl-eyebrow{font-family:var(--font-b);font-size:var(--small-size);font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--sienna);margin-bottom:clamp(.5rem,1.5vh,1rem)}
+.cl-title{font-family:var(--font-d);font-style:italic;font-size:clamp(3rem,9vw,7rem);font-weight:400;color:#f5f0e8;line-height:.92;margin-bottom:clamp(.8rem,2vh,1.5rem)}
+.cl-line{width:clamp(3rem,8vw,6rem);height:1px;background:var(--sienna);margin:0 auto clamp(.6rem,1.5vh,1.2rem)}
+.cl-dates{font-family:var(--font-b);font-size:clamp(.7rem,1.5vw,1rem);color:rgba(245,240,232,.35);letter-spacing:.2em;margin-bottom:clamp(.4rem,1vh,.8rem)}
+.cl-cities{font-family:var(--font-d);font-style:italic;font-size:clamp(.75rem,1.6vw,1.15rem);color:rgba(245,240,232,.35)}
+
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle">✏ Editar</button>
+<div class="edit-banner" id="editBanner">Modo edición — Ctrl+S para guardar</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 1: PORTADA                   ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-parchment map-grid" id="s1">
+  <div class="top-stripe"></div>
+  <div class="side-line"></div>
+  <div class="dot-cluster"><span></span><span></span><span></span><span></span><span></span></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Itinerario Europa · Octubre 2026</span>
+    <span class="slide-num">01 / 14</span>
+  </header>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,3vh,2.5rem);z-index:2;overflow:hidden">
+    <p class="portada-sub reveal">4 personas · 18 días · 9 destinos</p>
+    <h1 class="big-title reveal">Italia<em>+ Norte de España</em></h1>
+    <div class="pmeta reveal">
+      <div class="pmeta-item"><span class="pmeta-val">3 Oct</span><span class="pmeta-label">Partida</span></div>
+      <div class="pmeta-div"></div>
+      <div class="pmeta-item"><span class="pmeta-val">9</span><span class="pmeta-label">Destinos</span></div>
+      <div class="pmeta-div"></div>
+      <div class="pmeta-item"><span class="pmeta-val">~$2,000</span><span class="pmeta-label">Por persona</span></div>
+      <div class="pmeta-div"></div>
+      <div class="pmeta-item"><span class="pmeta-val">21 Oct</span><span class="pmeta-label">Regreso</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 2: RUTA COMPLETA             ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-parchment map-grid" id="s2">
+  <header class="slide-header">
+    <span class="eyebrow reveal">El Recorrido</span>
+    <span class="slide-num">02 / 14</span>
+  </header>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,3vh,2.5rem);z-index:2;overflow:hidden">
+    <h2 class="ruta-title reveal">La Ruta Completa</h2>
+    <div class="ruta-strip reveal">
+      <div class="r-stop"><div class="r-dot main"></div><span class="r-label">Madrid</span><span class="r-days">1d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot main"></div><span class="r-label">Roma</span><span class="r-days">4d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">Barcelona</span><span class="r-days">2d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">Bilbao</span><span class="r-days">2d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">San Sebastián</span><span class="r-days">1d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">Asturias</span><span class="r-days">3d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">Santiago</span><span class="r-days">2d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot"></div><span class="r-label">Rías Baixas</span><span class="r-days">2d</span></div>
+      <div class="r-conn"><div class="r-dashes"></div></div>
+      <div class="r-stop"><div class="r-dot main"></div><span class="r-label">Madrid</span><span class="r-days">1d</span></div>
+    </div>
+    <div class="ruta-cards reveal">
+      <div class="rc"><div class="rc-t">18 Días</div><div class="rc-s">En Europa</div></div>
+      <div class="rc"><div class="rc-t">Roma · Italia</div><div class="rc-s">4 días historia antigua</div></div>
+      <div class="rc"><div class="rc-t">Road Trip Norte</div><div class="rc-s">~1,000 km · 11 días</div></div>
+      <div class="rc"><div class="rc-t">3 Vuelos</div><div class="rc-s">Madrid→Roma→BCN + Vigo→Madrid</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 3: MADRID                    ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s3">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1543785734-4b6e564642f8?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Llegada · 4 Octubre</span>
+    <span class="slide-num">03 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">4 de Octubre · 1 Noche</div>
+    <h2 class="city-title reveal">Madrid</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Parque del Retiro al atardecer</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Centro histórico a pie — Puerta del Sol, Plaza Mayor</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Gran Vía y Malasaña — barrios con carácter</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Descanso necesario tras el vuelo nocturno desde Ezeiza</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Malasaña o La Latina</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 4: ROMA                      ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s4">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1509024644558-2f56ce76c490?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Italia · 5–8 Octubre</span>
+    <span class="slide-num">04 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">5 al 8 de Octubre · 3 Noches</div>
+    <h2 class="city-title reveal">Roma</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Coliseo + Foro Romano (skip-line)</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Museos Vaticano + Capilla Sixtina + Basílica San Pedro</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Fontana di Trevi · Panteón · Plaza Navona · Trastevere</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Day trip a Pompeya — tren ida/vuelta, tour arqueológico guiado</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Trastevere o Campo de' Fiori</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 5: ROMA DÍA A DÍA            ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-parchment map-grid" id="s5">
+  <header class="slide-header">
+    <span class="eyebrow reveal">Roma · Día a Día</span>
+    <span class="slide-num">05 / 14</span>
+  </header>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,2.5vh,2rem);z-index:2;overflow:hidden">
+    <div class="days-grid reveal">
+      <div class="day-card"><div class="day-num">Día 1 · 5 Oct</div><div class="day-title">Llegada al Centro</div><ul class="day-items"><li>Panteón + Fontana di Trevi</li><li>Plaza Navona</li><li>Cena en Trastevere</li></ul></div>
+      <div class="day-card"><div class="day-num">Día 2 · 6 Oct</div><div class="day-title">Coliseo y Foro Romano</div><ul class="day-items"><li>Coliseo + Foro + Palatino</li><li>Basílica San Juan de Letrán</li><li>Barrio Monti</li></ul></div>
+      <div class="day-card"><div class="day-num">Día 3 · 7 Oct</div><div class="day-title">Vaticano</div><ul class="day-items"><li>Museos Vaticano + Capilla Sixtina</li><li>Basílica San Pedro</li><li>Puente Sant'Angelo al atardecer</li></ul></div>
+      <div class="day-card"><div class="day-num">Día 4 · 8 Oct</div><div class="day-title">Pompeya + Partida</div><ul class="day-items"><li>Day trip Pompeya en tren</li><li>Archaeological Park (guiado)</li><li>Vuelo nocturno a Barcelona</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 6: BARCELONA                 ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s6">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1578095172812-dcc191c5aed8?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">España · 8–10 Octubre</span>
+    <span class="slide-num">06 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">8 al 10 de Octubre · 2 Noches</div>
+    <h2 class="city-title reveal">Barcelona</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Sagrada Família — obra maestra de Gaudí</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Barrio Gòtic + Catedral de Barcelona</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Las Ramblas + Mercado de La Boqueria</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Eixample modernista + Parque Güell (si no se elige SF)</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">El Born o Eixample</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 7: ROAD TRIP NORTE (stats)   ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-parchment map-grid" id="s7">
+  <div class="side-line"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">10 — 20 Octubre</span>
+    <span class="slide-num">07 / 14</span>
+  </header>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,2.5vh,2rem);z-index:2;overflow:hidden">
+    <h2 class="rt-title reveal">Road Trip Norte de España</h2>
+    <p class="rt-sub reveal">Barcelona → Bilbao → San Sebastián → Asturias → Santiago → Rías Baixas → Vigo</p>
+    <div class="rt-stops reveal">
+      <div class="rt-stop"><div class="rt-num">01</div><div class="rt-city">Bilbao</div><div class="rt-nights">2 noches</div></div>
+      <div class="rt-stop"><div class="rt-num">02</div><div class="rt-city">San Sebastián</div><div class="rt-nights">1 noche</div></div>
+      <div class="rt-stop"><div class="rt-num">03</div><div class="rt-city">Asturias</div><div class="rt-nights">3 noches</div></div>
+      <div class="rt-stop"><div class="rt-num">04</div><div class="rt-city">Santiago</div><div class="rt-nights">2 noches</div></div>
+      <div class="rt-stop"><div class="rt-num">05</div><div class="rt-city">Rías Baixas</div><div class="rt-nights">2 noches</div></div>
+    </div>
+    <div class="rt-facts reveal">
+      <div><div class="rt-fval">~1,000 km</div><div class="rt-flab">Distancia total</div></div>
+      <div><div class="rt-fval">11 días</div><div class="rt-flab">En auto alquilado</div></div>
+      <div><div class="rt-fval">€158.75</div><div class="rt-flab">Por persona</div></div>
+      <div><div class="rt-fval">2–3</div><div class="rt-flab">Conductores alternando</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 8: BILBAO                    ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s9">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1745786873673-9d7509ed0184?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">País Vasco · 10–12 Octubre</span>
+    <span class="slide-num">08 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">10 al 12 de Octubre · 2 Noches</div>
+    <h2 class="city-title reveal">Bilbao</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Museo Guggenheim (Frank Gehry)</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Casco Viejo — Las Siete Calles históricas</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Paseo por el río Nervión hasta el Guggenheim</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Noche de pintxos vascos en el Casco Viejo</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Casco Viejo</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 9: SAN SEBASTIÁN             ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s10">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1663845074983-9a1a04604470?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">País Vasco · 12–13 Octubre</span>
+    <span class="slide-num">09 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">12 de Octubre · 1 Noche</div>
+    <h2 class="city-title reveal">San Sebastián</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Playa La Concha — una de las más bellas de Europa</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Happy hour de pintxos en el Casco Viejo medieval</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Monte Igueldo — vistas panorámicas de la bahía</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Paradas en Lekeitio y Getaria desde Bilbao</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Centro Histórico</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 10: ASTURIAS                 ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s11">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1550152622-4623c91b6939?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Asturias · 13–16 Octubre</span>
+    <span class="slide-num">10 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">13 al 16 de Octubre · 3 Noches</div>
+    <h2 class="city-title reveal">Asturias</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Lagos de Covadonga — Parque Nacional Picos de Europa</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Gijón — paseo por la playa asturiana</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Cangas de Onís — Puente Romano icónico</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Oviedo: Catedral San Salvador + Plaza Corrada</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Centro Histórico</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 11: SANTIAGO                 ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s12">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1628964553233-de7db8394907?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Galicia · 16–18 Octubre</span>
+    <span class="slide-num">11 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">16 al 18 de Octubre · 2 Noches</div>
+    <h2 class="city-title reveal">Santiago de<br>Compostela</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Catedral de Santiago — Patrimonio UNESCO</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Plaza del Obradoiro — corazón del Camino</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Casco viejo medieval con audioguía</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Cena de mariscos gallegos — mejillones, pulpo</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Centro Histórico</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 12: RÍAS BAIXAS              ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide slide-photo" id="s13b">
+  <div class="photo-bg" style="background-image:url('https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&w=1920&q=80&fit=crop')"></div>
+  <div class="photo-overlay"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Galicia · 18–20 Octubre</span>
+    <span class="slide-num">12 / 14</span>
+  </header>
+  <div class="city-content">
+    <div class="city-dates reveal">18 al 20 de Octubre · 2 Noches</div>
+    <h2 class="city-title reveal">Rías Baixas</h2>
+    <div class="city-highlight reveal">
+      <span class="hl-badge">★ Imperdible</span>
+      <span class="hl-text">Degustación de Albariño en Cambados</span>
+    </div>
+    <div class="city-acts reveal">
+      <div class="act-card"><span class="act-num">01</span><span class="act-text">Castillo de Baiona + Playa</span></div>
+      <div class="act-card"><span class="act-num">02</span><span class="act-text">Paisaje espectacular de la Ría Gallega</span></div>
+      <div class="act-card"><span class="act-num">03</span><span class="act-text">Devolución del auto en Vigo el 20 Oct</span></div>
+    </div>
+    <div class="city-hotel-row reveal">
+      <span class="hotel-icon">◉</span>
+      <span class="hotel-name">Barrio recomendado</span>
+      <span class="hotel-sep">·</span>
+      <span class="hotel-pill">Centro Histórico</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 13: PRESUPUESTO              ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-parchment map-grid" id="s13">
+  <div class="top-stripe"></div>
+  <header class="slide-header">
+    <span class="eyebrow reveal">Costos Estimados</span>
+    <span class="slide-num">13 / 14</span>
+  </header>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad) clamp(1rem,2.5vh,2rem);z-index:2;overflow:hidden">
+    <h2 class="pres-title reveal">Presupuesto por Persona</h2>
+    <p class="pres-sub reveal">Sin vuelos internacionales Buenos Aires–Madrid (ya pagados)</p>
+    <div class="pres-grid reveal">
+      <div class="pres-item"><span class="pres-concept">Hospedaje (17.5 noches)</span><span class="pres-amount">$900–1,000</span></div>
+      <div class="pres-item"><span class="pres-concept">Comidas (18–19 días)</span><span class="pres-amount">$475–570</span></div>
+      <div class="pres-item"><span class="pres-concept">Vuelos internos (3)</span><span class="pres-amount">$140–220</span></div>
+      <div class="pres-item"><span class="pres-concept">Museos y entradas</span><span class="pres-amount">$100–120</span></div>
+      <div class="pres-item"><span class="pres-concept">Auto + nafta + peajes</span><span class="pres-amount">$192.50</span></div>
+      <div class="pres-item"><span class="pres-concept">Transporte local + souvenirs</span><span class="pres-amount">$160–180</span></div>
+    </div>
+    <div class="pres-total reveal">
+      <span class="pres-total-label">Total estimado · por persona</span>
+      <span class="pres-total-amt">$1,902–2,037</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  SLIDE 14: ¡NOS VAMOS!             ║
+     ╚══════════════════════════════════════╝ -->
+<section class="slide bg-dark map-grid" id="s14">
+  <div class="side-line"></div>
+  <div class="dot-cluster"><span></span><span></span><span></span><span></span><span></span></div>
+  <header class="slide-header">
+    <span class="eyebrow">Octubre 2026</span>
+    <span class="slide-num" style="color:rgba(245,240,232,.25)">14 / 14</span>
+  </header>
+  <div class="cl-content">
+    <p class="cl-eyebrow reveal">El sueño europeo que siempre quisimos</p>
+    <h1 class="cl-title reveal">¡Nos vamos<br>a Europa!</h1>
+    <div class="cl-line reveal"></div>
+    <p class="cl-dates reveal">3 Octubre — 21 Octubre 2026</p>
+    <p class="cl-cities reveal">Roma · Barcelona · Bilbao · San Sebastián · Asturias · Santiago · Rías Baixas</p>
+  </div>
+  <footer style="padding:clamp(.8rem,2vh,1.5rem) var(--pad);z-index:2;text-align:center;flex-shrink:0">
+    <span style="font-family:var(--font-b);font-size:clamp(.4rem,.72vw,.56rem);color:rgba(245,240,232,.18);letter-spacing:.3em;text-transform:uppercase">↑ ↓ Teclas · Rueda · Touch</span>
+  </footer>
+</section>
+
+
+<script>
+/* =============================================
+   SLIDE CONTROLLER
+   ============================================= */
+class Deck {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.n = this.slides.length;
+    this.cur = 0;
+    this.pb = document.getElementById('progressBar');
+    this.dotsEl = document.getElementById('navDots');
+    this.buildDots();
+    this.observe();
+    this.keys();
+    this.touch();
+    this.wheel();
+  }
+  buildDots() {
+    this.dotsEl.innerHTML = '';
+    this.slides.forEach((_,i) => {
+      const b = document.createElement('button');
+      b.className = 'nav-dot' + (i===0?' active':'');
+      b.setAttribute('aria-label','Slide '+(i+1));
+      b.addEventListener('click',()=>this.go(i));
+      this.dotsEl.appendChild(b);
+    });
+  }
+  ui(i) {
+    this.dotsEl.querySelectorAll('.nav-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+    this.pb.style.width = (this.n<=1?100:(i/(this.n-1))*100)+'%';
+    this.cur = i;
+  }
+  observe() {
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('visible');
+          const i=this.slides.indexOf(e.target);
+          if(i!==-1)this.ui(i);
+        }
+      });
+    },{threshold:.5});
+    this.slides.forEach(s=>obs.observe(s));
+  }
+  go(i){
+    i=Math.max(0,Math.min(this.n-1,i));
+    this.slides[i].scrollIntoView({behavior:'smooth'});
+  }
+  keys(){
+    document.addEventListener('keydown',e=>{
+      if(e.target.getAttribute('contenteditable'))return;
+      if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();this.go(this.cur+1);}
+      else if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();this.go(this.cur-1);}
+      else if(e.key==='Home'){e.preventDefault();this.go(0);}
+      else if(e.key==='End'){e.preventDefault();this.go(this.n-1);}
+    });
+  }
+  touch(){
+    let sy=0,sx=0;
+    document.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;sx=e.touches[0].clientX;},{passive:true});
+    document.addEventListener('touchend',e=>{
+      const dy=sy-e.changedTouches[0].clientY,dx=sx-e.changedTouches[0].clientX;
+      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40)dy>0?this.go(this.cur+1):this.go(this.cur-1);
+    },{passive:true});
+  }
+  wheel(){
+    let last=0;
+    document.addEventListener('wheel',e=>{
+      const now=Date.now();if(now-last<800)return;last=now;
+      e.deltaY>0?this.go(this.cur+1):this.go(this.cur-1);
+    },{passive:true});
+  }
+}
+
+/* =============================================
+   INLINE EDITOR
+   ============================================= */
+class Editor {
+  constructor() {
+    this.on = false;
+    this.toggle = document.getElementById('editToggle');
+    this.banner = document.getElementById('editBanner');
+    this.hotzone = document.getElementById('editHotzone');
+    this.t = null;
+    this.setup();
+  }
+  els() {
+    return document.querySelectorAll('.big-title,.portada-sub,.pmeta-val,.city-title,.city-dates,.hl-text,.act-text,.hotel-name,.hotel-pill,.ruta-title,.rc-t,.rc-s,.day-title,.day-items li,.rt-title,.rt-sub,.rt-city,.rt-nights,.rt-fval,.rt-flab,.pres-title,.pres-concept,.pres-amount,.pres-total-amt,.cl-eyebrow,.cl-title,.cl-dates,.cl-cities');
+  }
+  setup() {
+    const show=()=>{clearTimeout(this.t);this.toggle.classList.add('show');};
+    const hide=()=>{this.t=setTimeout(()=>{if(!this.on)this.toggle.classList.remove('show');},400);};
+    this.hotzone.addEventListener('mouseenter',show);
+    this.hotzone.addEventListener('mouseleave',hide);
+    this.toggle.addEventListener('mouseenter',()=>clearTimeout(this.t));
+    this.toggle.addEventListener('mouseleave',hide);
+    this.hotzone.addEventListener('click',()=>this.flip());
+    this.toggle.addEventListener('click',()=>this.flip());
+    document.addEventListener('keydown',e=>{
+      if((e.key==='e'||e.key==='E')&&!e.target.getAttribute('contenteditable'))this.flip();
+      if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();if(this.on)this.save();}
+    });
+  }
+  flip() {
+    this.on=!this.on;
+    document.body.classList.toggle('edit-active',this.on);
+    this.toggle.classList.toggle('active',this.on);
+    this.banner.classList.toggle('active',this.on);
+    this.toggle.textContent=this.on?'✓ Listo':'✏ Editar';
+    this.els().forEach(el=>this.on?el.setAttribute('contenteditable','true'):el.removeAttribute('contenteditable'));
+  }
+  save() {
+    const els=Array.from(document.querySelectorAll('[contenteditable]'));
+    els.forEach(el=>el.removeAttribute('contenteditable'));
+    document.body.classList.remove('edit-active');
+    this.toggle.classList.remove('active','show');
+    this.banner.classList.remove('active');
+    const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    document.body.classList.add('edit-active');
+    els.forEach(el=>el.setAttribute('contenteditable','true'));
+    this.toggle.classList.add('active');
+    this.banner.classList.add('active');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+    a.download='europa-octubre-2026-crema.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+}
+
+const deck = new Deck();
+const editor = new Editor();
+</script>
+</body>
+</html>
